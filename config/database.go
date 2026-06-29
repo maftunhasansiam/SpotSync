@@ -2,12 +2,12 @@ package config
 
 import (
 	"fmt"
-	"log"
-	"os"
-
+	"github.com/maftunhasansiam/SpotSync/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"log"
+	"os"
 )
 
 var DB *gorm.DB
@@ -31,6 +31,16 @@ func ConnectDatabase() {
 	}
 	sqlDB.SetMaxOpenConns(25)
 	sqlDB.SetMaxIdleConns(10)
+
+	// Auto migrate all models
+	err = db.AutoMigrate(
+		&models.User{},
+		&models.ParkingZone{},
+		&models.Reservation{},
+	)
+	if err != nil {
+		log.Fatal("Failed to auto migrate:", err)
+	}
 
 	fmt.Println("Database connected successfully")
 	DB = db
