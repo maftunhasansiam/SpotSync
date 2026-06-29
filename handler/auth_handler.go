@@ -56,12 +56,3 @@ func (h *AuthHandler) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, dto.SuccessResponse("Login successful", result))
 }
 
-func formatValidationErrors(err error) map[string]string {
-	errs := make(map[string]string)
-	if validationErrors, ok := err.(validator.ValidationErrors); ok {
-		for _, e := range validationErrors {
-			errs[e.Field()] = e.Tag()
-		}
-	}
-	return errs
-}
