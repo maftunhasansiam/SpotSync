@@ -32,7 +32,7 @@ func ConnectDatabase() {
 	sqlDB.SetMaxOpenConns(25)
 	sqlDB.SetMaxIdleConns(10)
 
-	// Auto migrate all models
+	// runs migrations on startup
 	err = db.AutoMigrate(
 		&models.User{},
 		&models.ParkingZone{},
@@ -42,6 +42,6 @@ func ConnectDatabase() {
 		log.Fatal("Failed to auto migrate:", err)
 	}
 
-	fmt.Println("Database connected successfully")
+	fmt.Println("Database connected and migrated successfully")
 	DB = db
 }
