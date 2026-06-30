@@ -10,7 +10,10 @@ require (
 	gorm.io/gorm v1.25.10
 )
 
-require golang.org/x/crypto v0.53.0
+require (
+	github.com/joho/godotenv v1.5.1
+	golang.org/x/crypto v0.53.0
+)
 
 require (
 	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
@@ -32,4 +35,5 @@ require (
 	golang.org/x/sync v0.21.0 // indirect
 	golang.org/x/sys v0.46.0 // indirect
 	golang.org/x/text v0.38.0 // indirect
+	golang.org/x/time v0.15.0 // indirect
 )
