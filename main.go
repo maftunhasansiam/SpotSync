@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	
+
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found, reading from environment variables")
 	}
@@ -40,11 +40,9 @@ func main() {
 	zoneHandler := handler.NewZoneHandler(zoneService, validate)
 	reservationHandler := handler.NewReservationHandler(reservationService, validate)
 
-
 	e := echo.New()
 	e.HideBanner = true
 
-	
 	e.Use(echomiddleware.Logger())
 	e.Use(echomiddleware.Recover())
 	e.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
@@ -52,6 +50,13 @@ func main() {
 		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodOptions},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 	}))
+
+	e.GET("/", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, map[string]string{
+			"status":  "ok",
+			"message": "SpotSync API is running",
+		})
+	})
 
 	e.GET("/health", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{"status": "ok", "service": "SpotSync API"})
@@ -64,17 +69,17 @@ func main() {
 	auth.POST("/login", authHandler.Login)
 
 	zones := api.Group("/zones")
-	zones.GET("", zoneHandler.GetAllZones)                                                             
-	zones.GET("/:id", zoneHandler.GetZone)                                                            
-	zones.POST("", zoneHandler.CreateZone, middleware.JWTMiddleware, middleware.AdminOnly)             
-	zones.PUT("/:id", zoneHandler.UpdateZone, middleware.JWTMiddleware, middleware.AdminOnly)          
-	zones.DELETE("/:id", zoneHandler.DeleteZone, middleware.JWTMiddleware, middleware.AdminOnly)        
+	zones.GET("", zoneHandler.GetAllZones)
+	zones.GET("/:id", zoneHandler.GetZone)
+	zones.POST("", zoneHandler.CreateZone, middleware.JWTMiddleware, middleware.AdminOnly)
+	zones.PUT("/:id", zoneHandler.UpdateZone, middleware.JWTMiddleware, middleware.AdminOnly)
+	zones.DELETE("/:id", zoneHandler.DeleteZone, middleware.JWTMiddleware, middleware.AdminOnly)
 
 	reservations := api.Group("/reservations", middleware.JWTMiddleware)
-	reservations.GET("/my-reservations", reservationHandler.GetMyReservations)                        
-	reservations.POST("", reservationHandler.CreateReservation)                                         
-	reservations.DELETE("/:id", reservationHandler.CancelReservation)                                   
-	reservations.GET("", reservationHandler.GetAllReservations, middleware.AdminOnly)                   
+	reservations.GET("/my-reservations", reservationHandler.GetMyReservations)
+	reservations.POST("", reservationHandler.CreateReservation)
+	reservations.DELETE("/:id", reservationHandler.CancelReservation)
+	reservations.GET("", reservationHandler.GetAllReservations, middleware.AdminOnly)
 
 	port := os.Getenv("PORT")
 	if port == "" {
