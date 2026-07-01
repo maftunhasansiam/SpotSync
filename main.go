@@ -85,6 +85,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	log.Println("Root route (/) registered")
 	fmt.Printf("SpotSync API running on port %s\n", port)
 	if err := e.Start(":" + port); err != nil && err != http.ErrServerClosed {
 		log.Fatal("Failed to start server:", err)
